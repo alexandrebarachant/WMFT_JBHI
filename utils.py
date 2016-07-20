@@ -97,20 +97,20 @@ def generate_report(pred_tot, labels, name='SVM'):
     return fig, axes
 
 
-def read_data(subject_names, condition_names=['*ealthy', '*ild', '*evere'],
+def read_data(subject_names,
               estimator=_lwf, Ntasks=15, Base='./data',
               centroid=ix_tot):
     """Read data."""
 
     ix_full = np.concatenate([[3*i, 3*i+1, 3*i+2] for i in centroid])
-
+    condition_names = ['healthy', 'mild', 'moderate']
     X = []
     subject = []
     condition = []
     task = []
     timing = []
 
-    reg = re.compile('.*/(.*)_(.*)_task(\d*)_.*3D.bin')
+    reg = re.compile('.*/(.*)_(.*)_task(\d*).bin')
 
     for name in subject_names:
 
@@ -118,7 +118,7 @@ def read_data(subject_names, condition_names=['*ealthy', '*ild', '*evere'],
             invalid = False
             fnames = []
             for t in range(1, Ntasks + 1):
-                fi = glob('%s/%s_%s_task%d_*3D.bin' % (Base, name, c, t))
+                fi = glob('%s/%s_%s_task%02d.bin' % (Base, name, c, t))
                 if len(fi) > 0:
                     fnames.append(fi[0])
                 else:
@@ -146,7 +146,7 @@ def read_data(subject_names, condition_names=['*ealthy', '*ild', '*evere'],
                     # regexp to find the subject
                     s, c, t = reg.findall(fname)[0]
                     subject.append(s)
-                    condition.append(c.lower())
+                    condition.append(c)
                     task.append(int(t))
                 else:
                     print('Empty file for %s' % fname)

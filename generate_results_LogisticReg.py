@@ -20,12 +20,11 @@ from utils import read_data, generate_report
 subject_names = ['S%02d' % i for i in range(1, 25)]
 
 Base = './data'
-condition_names = ['*ealthy', '*ild', '*evere']
-Nconditions = len(condition_names)
+Nconditions = 3
 # read data
 
 
-X, subject, condition, task, timing = read_data(subject_names, condition_names,
+X, subject, condition, task, timing = read_data(subject_names,
                                                 Base=Base, estimator=_lwf)
 
 clf = make_pipeline(TangentSpace('logeuclid'),
