@@ -19,4 +19,4 @@ Results obtained by using a Logistic Regression
 
 Results obtained by using a Riemannian MDM classifier (based on distance only)
 
-![SVM](results/results_mdm.png)
+![SVM](results/results_MDM.png)
