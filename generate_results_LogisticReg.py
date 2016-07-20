@@ -10,7 +10,7 @@ from pyriemann.tangentspace import TangentSpace
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.cross_validation import LeaveOneLabelOut
-from sklearn.svm import SVC
+from sklearn.linear_model import LogisticRegression
 
 from pyriemann.utils.covariance import _lwf
 
@@ -30,9 +30,7 @@ X, subject, condition, task, timing = read_data(subject_names, condition_names,
 
 clf = make_pipeline(TangentSpace('logeuclid'),
                     StandardScaler(with_mean=False),
-                    SVC(C=100, kernel='linear',
-                        probability=True, decision_function_shape='ovo',
-                        random_state=454111))
+                    LogisticRegression(penalty='l1', random_state=4353323))
 
 # initialize variables
 acc = []
@@ -76,6 +74,6 @@ preds = np.argmax(np.mean(pred_tot, axis=0), axis=1)
 labels = np.mean(labels_tot, axis=0)
 pred_tot = np.array(pred_tot)
 
-generate_report(pred_tot, labels, name='SVM')
-plt.savefig('./results/results_svm.png')
+generate_report(pred_tot, labels, name='LogisticReg')
+plt.savefig('./results/results_LogisticReg.png')
 plt.show()

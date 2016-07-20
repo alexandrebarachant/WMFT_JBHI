@@ -39,7 +39,7 @@ def plot_confusion_matrix(cm, target_names, title='Confusion matrix',
     plt.xlabel('Predicted label')
 
 
-def generate_report(pred_tot, labels):
+def generate_report(pred_tot, labels, name='SVM'):
     """Generate and plot accuracy report."""
     fig, axes = plt.subplots(2, 2, figsize=[10, 10])
     pred_tot = np.array(pred_tot)
@@ -51,6 +51,8 @@ def generate_report(pred_tot, labels):
 
     res = pd.DataFrame(data=acc, columns=['acc'], index=Task_names)
     res['task'] = Task_names
+    res.to_csv('./results/results_individual_tasks_%s.csv' % name)
+
     g = sns.barplot(x='acc', y='task', data=res.sort('acc', ascending=False),
                     palette="Blues", orient='h', ax=axes[0, 0])
     g.set_xlim([30, 100])
@@ -65,13 +67,14 @@ def generate_report(pred_tot, labels):
         acc.append(np.mean(preds == labels))
 
     n_opt = np.argmax(acc) + 1
+    res = pd.DataFrame(data=acc, columns=['acc'], index=range(1, 16))
+    res.to_csv('./results/results_cumul_%s.csv' % name)
+
     g = sns.tsplot(acc, range(1, 16), ax=axes[1, 0])
     axes[1, 0].plot([n_opt, n_opt], [0.8, 0.95], ls='--', lw=2, c='r')
     axes[1, 0].set_ylim(0.8, 0.95)
     g.set_xlabel('Number of task')
     g.set_ylabel('Accuracy (%)')
-
-    res.to_csv('results_task.csv')
 
     preds = np.argmax(np.mean(pred_tot[ix[0:n_opt]], axis=0), axis=1)
 

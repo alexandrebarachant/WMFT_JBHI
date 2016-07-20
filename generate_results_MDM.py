@@ -5,12 +5,10 @@ import numpy as np
 
 from pylab import plt
 
-from pyriemann.tangentspace import TangentSpace
+from pyriemann.classification import MDM
 
-from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.preprocessing import LabelEncoder
 from sklearn.cross_validation import LeaveOneLabelOut
-from sklearn.svm import SVC
 
 from pyriemann.utils.covariance import _lwf
 
@@ -28,11 +26,7 @@ Nconditions = len(condition_names)
 X, subject, condition, task, timing = read_data(subject_names, condition_names,
                                                 Base=Base, estimator=_lwf)
 
-clf = make_pipeline(TangentSpace('logeuclid'),
-                    StandardScaler(with_mean=False),
-                    SVC(C=100, kernel='linear',
-                        probability=True, decision_function_shape='ovo',
-                        random_state=454111))
+clf = MDM('riemann')
 
 # initialize variables
 acc = []
@@ -76,6 +70,7 @@ preds = np.argmax(np.mean(pred_tot, axis=0), axis=1)
 labels = np.mean(labels_tot, axis=0)
 pred_tot = np.array(pred_tot)
 
-generate_report(pred_tot, labels, name='SVM')
-plt.savefig('./results/results_svm.png')
+fig, axes = generate_report(pred_tot, labels, name='MDM')
+axes[1, 0].set_ylim(0.6, 0.95)
+plt.savefig('./results/results_MDM.png')
 plt.show()
